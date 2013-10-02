@@ -5,7 +5,7 @@ server = require './server'
 doc = """
 
 Usage:
-    tailor [options] <port> <logdir>
+    tailor [options] <logdir> <mountdir> [<port>] 
 
 Options:
     --help
@@ -15,13 +15,15 @@ Description:
     #{package_json.description}
 
 Example:
-	tailor 9999 /path/to/your/logs
+	tailor 9999 /path/to/your/logs /path/to/mount
 
 """
 {docopt} = require 'docopt', version: package_json.version
 options = docopt doc
 
-port = options['<port>']
-logdir = options['<logdir>']
+logdir = options['<logdir>'] || "/Users/glamp/repos/yhat/enterprise/logs"
+mountdir = options['<mountdir>'] || "/tmp/tutorial/mnt"
+port = options['<port>'] || 3000
 
-server port, logdir
+server logdir, mountdir, port
+

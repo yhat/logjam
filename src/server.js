@@ -5,16 +5,10 @@
 
 var express = require('express')
   , http = require('http')
-  , path = require('path')
-  , spawn = require('child_process').spawn
-  , _ = require('underscore')
-  , ansiToHtml= require('ansi-to-html');;
+  , path = require('path');
 
-var ansi = new ansiToHtml();
 
-module.exports = function(port, logdir) {
-
-  logdir = logdir || "./logs/";
+module.exports = function(logdir, mountdir, port) {
 
   var app = express();
 
@@ -45,52 +39,14 @@ module.exports = function(port, logdir) {
   });
 
   var io = require('socket.io').listen(server, { log: false })
-
-
-  startTail = function(glob) {
-    var child = spawn("tail", ["-n", "1", "-f", logdir + glob + ".log"]);
-    return child;
-  };
-
-  var tails = {};
+    , logstream = require('./logstream')(logdir, mountdir, io);
 
   io.sockets.on('connection', function(socket) {
 
-    socket.on("greplog", function(data) {
-      var model = data.model
-        , regex = "";
-      try {
-        regex = new RegExp(data.regex || ".*", 'g')
-      } catch (e) {
-        regex = RegExp(".+", "g");
-      }
-      var channel = model + '-' + regex;
-      
-      socket.channel = channel;
-      socket.join(channel);
-      if (!_.has(tails, model)) {
-        tails[channel] = startTail(model);
-        tails[channel].stdout.on('data', function(d) {
-          if (regex.test(d.toString())) {
-            var line = ansi.toHtml(d.toString().trim());
-            if (! /<p>/.test(line)) {
-              line = "<p>" + line + "</p>";
-            }
-            io.sockets.in(channel).emit('logthis', line);
-          }
-        });
-      } else {
-        console.log("tail already exists: " + model);
-      }
+    socket.on("message", function(data) {
+      console.log("new message: " + data);
     });
-    socket.on("disconnect", function() {
-      if (io.sockets.clients(socket.channel).length==1) {
-        console.log(socket.channel + " is now empty, removing tail");
-        if (_.has(tails, socket.channel)) {
-          tails[socket.channel].kill();
-          delete tails[socket.channel];
-        }
-      }
-    });
+
   });
+
 };

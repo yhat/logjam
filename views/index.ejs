@@ -12,13 +12,10 @@
 
     <script type="text/javascript">
       var socket  = io.connect();
-      var model = prompt("what model?");
-      var regex = prompt("what pattern?");
 
-      socket.emit("greplog", { model: model, regex: regex });
-      socket.on("logthis", function(data) {
-        $("#console").append(data);
-	$(document).scrollTop($(document).height());
+      socket.on("message", function(data) {
+          console.log(data);
+          $("#console").append(data);
       });
     </script>
 
