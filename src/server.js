@@ -10,7 +10,7 @@ var express = require('express')
   , _ = require('underscore')
   , ansiToHtml= require('ansi-to-html');;
 
-var ansi = new antiToHtml();
+var ansi = new ansiToHtml();
 
 module.exports = function(port, logdir) {
 
