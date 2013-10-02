@@ -72,9 +72,10 @@ module.exports = function(port, logdir) {
     socket.on("disconnect", function() {
       if (io.sockets.clients(socket.modelname).length==1) {
         console.log(socket.modelname + " is now empty, removing tail");
-        // stop tailing
-        tails[socket.modelname].kill();
-        delete tails[socket.modelname];
+        if _.has(tails, socket.modelname) {
+          tails[socket.modelname].kill();
+          delete tails[socket.modelname];
+        }
       }
     });
   });
