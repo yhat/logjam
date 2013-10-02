@@ -18,6 +18,7 @@
       socket.emit("greplog", { model: model, regex: regex });
       socket.on("logthis", function(data) {
         $("#console").append(data);
+	$(document).scrollTop($(document).height());
       });
     </script>
 
