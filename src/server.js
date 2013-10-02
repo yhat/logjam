@@ -58,7 +58,8 @@ module.exports = function(port, logdir) {
       socket.modelname = model;
       socket.join(model);
       if (!_.has(tails, model)) {
-        tails[model] = startTail(model).stdout.on('data', function(d) {
+        tails[model] = startTail(model);
+        tails[model].stdout.on('data', function(d) {
           io.sockets.in(model).emit('logthis', d.toString().trim());
         });
       } else {
@@ -66,12 +67,11 @@ module.exports = function(port, logdir) {
       }
     });
     socket.on("disconnect", function() {
-      // not sure if this should be 0 or 1
-      if (io.sockets.clients(socket.modelname).length==0) {
+      if (io.sockets.clients(socket.modelname).length==1) {
         console.log(socket.modelname + " is now empty, removing tail");
         // stop tailing
-        tail[socket.modelname].kill();
-        delete tail[socket.modelname];
+        tails[socket.modelname].kill();
+        delete tails[socket.modelname];
       }
     });
   });
