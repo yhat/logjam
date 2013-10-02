@@ -1,9 +1,9 @@
 {
-  "name": "application-name",
+  "name": "tailor",
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "node app.js"
+    "start": "node ./src/server.js"
   },
   "bin": {
     "tailor": "./bin/tailor"
