@@ -55,6 +55,7 @@ module.exports = function(port, logdir) {
   io.sockets.on('connection', function(socket) {
 
     socket.on("modelname", function(model) {
+      socket.modelname = model;
       socket.join(model);
       if (!_.has(tails, model)) {
         tails[model] = startTail(model).stdout.on('data', function(d) {
@@ -62,6 +63,15 @@ module.exports = function(port, logdir) {
         });
       } else {
         console.log("tail already exists: " + model);
+      }
+    });
+    socket.on("disconnect", function() {
+      // not sure if this should be 0 or 1
+      if (io.sockets.clients(socket.modelname).length==0) {
+        console.log(socket.modelname + " is now empty, removing tail");
+        // stop tailing
+        tail[socket.modelname].kill();
+        delete tail[socket.modelname];
       }
     });
   });
