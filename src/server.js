@@ -56,26 +56,39 @@ module.exports = function(port, logdir) {
 
   io.sockets.on('connection', function(socket) {
 
-    socket.on("modelname", function(model) {
-      socket.modelname = model;
-      socket.join(model);
+    socket.on("greplog", function(data) {
+      var model = data.model
+        , regex = "";
+      try {
+        regex = new RegExp(data.regex || ".*", 'g')
+      } catch (e) {
+        regex = RegExp(".+", "g");
+      }
+      var channel = model + '-' + regex;
+      
+      socket.channel = channel;
+      socket.join(channel);
       if (!_.has(tails, model)) {
-        tails[model] = startTail(model);
-        tails[model].stdout.on('data', function(d) {
-          var line = ansi.toHtml(d.toString().trim());
-          // TODO: convert to HTML if not ansi
-          io.sockets.in(model).emit('logthis', line);
+        tails[channel] = startTail(model);
+        tails[channel].stdout.on('data', function(d) {
+          if (regex.test(d.toString())) {
+            var line = ansi.toHtml(d.toString().trim());
+            if (! /<p>/.test(line)) {
+              line = "<p>" + line + "</p>";
+            }
+            io.sockets.in(channel).emit('logthis', line);
+          }
         });
       } else {
         console.log("tail already exists: " + model);
       }
     });
     socket.on("disconnect", function() {
-      if (io.sockets.clients(socket.modelname).length==1) {
-        console.log(socket.modelname + " is now empty, removing tail");
-        if (_.has(tails, socket.modelname)) {
-          tails[socket.modelname].kill();
-          delete tails[socket.modelname];
+      if (io.sockets.clients(socket.channel).length==1) {
+        console.log(socket.channel + " is now empty, removing tail");
+        if (_.has(tails, socket.channel)) {
+          tails[socket.channel].kill();
+          delete tails[socket.channel];
         }
       }
     });

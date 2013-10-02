@@ -13,10 +13,11 @@
     <script type="text/javascript">
       var socket  = io.connect();
       var model = prompt("what model?");
-      socket.emit("modelname", model);
+      var regex = prompt("what pattern?");
+
+      socket.emit("greplog", { model: model, regex: regex });
       socket.on("logthis", function(data) {
-        console.log(data);
-	$("#console").append(data + "<br>");
+        $("#console").append(data);
       });
     </script>
 
