@@ -3,18 +3,22 @@
   <head>
     <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script src="/javascripts/jquery.min.js" type="text/javascript" charset="utf-8"></script>
     <script src="/socket.io/socket.io.js" type="text/javascript" charset="utf-8"></script>
   </head>
   <body>
     <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
+    <pre id="console"></pre>
+
     <script type="text/javascript">
       var socket  = io.connect();
       var model = prompt("what model?");
       socket.emit("modelname", model);
       socket.on("logthis", function(data) {
-          console.log(data);
+        console.log(data);
+	$("#console").append(data + "<br>");
       });
     </script>
+
   </body>
 </html>
