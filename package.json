@@ -1,0 +1,19 @@
+{
+  "name": "application-name",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node app.js"
+  },
+  "bin": {
+    "tailor": "./bin/tailor"
+  },
+  "dependencies": {
+    "express": "3.4.0",
+    "ejs": "*",
+    "socket.io": "~0.9.16",
+    "underscore": "~1.5.2",
+    "coffee-script": "~1.6.3",
+    "docopt": "~0.4.0"
+  }
+}
