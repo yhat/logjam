@@ -1,8 +1,10 @@
 var fs = require('fs')
   , f4js = require('fuse4js')
   , path = require('path')
-  , ansi= require('ansi-to-html')()
+  , walk = require('./walk')
+  , ansi = require('ansi-to-html')()
   , srcRoot = '/'
+  , obj = {}
   , options = {};
 
 require("shellscript").globalize();
@@ -17,10 +19,9 @@ htmlifyAnsi = function(line) {
 
 module.exports = function(srcRoot, mountPoint, stream) {
 
-  console.log($("diskutil unmount /tmp/tutorial/mnt"));
-
-  // needs to be defined globally
-  srcRoot = srcRoot;
+  obj = walk(srcRoot);
+  console.log(obj);
+  console.log($("diskutil unmount " + mountPoint));
 
   //---------------------------------------------------------------------------
 
@@ -47,21 +48,67 @@ module.exports = function(srcRoot, mountPoint, stream) {
     return errno;
   }
 
+
+  //---------------------------------------------------------------------------
+
+  /*
+   * Given the name space represented by the object 'root', locate
+   * the sub-object corresponding to the specified path
+   */
+  function lookup(root, fpath) {
+    var cur = null, previous = null, name = '';
+    if (fpath === '/') {
+      return { node:root, parent:null, name:'' };
+    }
+    comps = fpath.split('/');
+    for (i = 0; i < comps.length; ++i) {
+      previous = cur;
+      if (i == 0) {
+        cur = root;
+      } else if (cur !== undefined ){
+        name = comps[i];
+        cur = cur[name];
+        if (cur === undefined) {
+          break;
+        }
+      }
+    }
+    return {node:cur, parent:previous, name:name};
+  }
+
   //---------------------------------------------------------------------------
 
   /*
    * Handler for the getattr() system call.
-   * path: the path to the file
+   * fpath: the fpath to the file
    * cb: a callback of the form cb(err, stat), where err is the Posix return code
    *     and stat is the result in the form of a stat structure (when err === 0)
    */
-  function getattr(fpath, cb) {	  
-    var fpath = path.join(srcRoot, fpath);
-    return fs.lstat(fpath, function lstatCb(err, stats) {
-      if (err)      
-        return cb(-excToErrno(err));
-      return cb(0, stats);
-    });
+  function getattr(fpath, cb) {  
+    var stat = {};
+    var err = 0; // assume success
+    var info = lookup(obj, fpath);
+    var node = info.node;
+
+    switch (typeof node) {
+    case 'undefined':
+      err = -2; // -ENOENT
+      break;
+      
+    case 'object': // directory
+      stat.size = 4096;   // standard size of a directory
+      stat.mode = 040777; // directory with 777 permissions
+      break;
+    
+    case 'string': // file
+      stat.size = node.length;
+      stat.mode = 0100666; // file with 666 permissions
+      break;
+      
+    default:
+      break;
+    }
+    cb( err, stat );
   };
 
   //---------------------------------------------------------------------------
@@ -73,46 +120,29 @@ module.exports = function(srcRoot, mountPoint, stream) {
    *     and names is the result in the form of an array of file names (when err === 0).
    */
   function readdir(fpath, cb) {
-    var fpath = path.join(srcRoot, fpath);
-    return fs.readdir(fpath, function readdirCb(err, files) {
-      if (err)      
-        return cb(-excToErrno(err));
-      return cb(0, files);
-    });
-  }
+    var names = [];
+    var err = 0; // assume success
+    var info = lookup(obj, fpath);
 
-  //---------------------------------------------------------------------------
-
-  /*
-   * Handler for the readlink() system call.
-   * path: the path to the file
-   * cb: a callback of the form cb(err, name), where err is the Posix return code
-   *     and name is symlink target (when err === 0).
-   */
-  function readlink(fpath, cb) {
-    var fpath = path.join(srcRoot, fpath);
-    return fs.readlink(fpath, function readlinkCb(err, name) {
-      if (err)      
-        return cb(-excToErrno(err));
-      return cb(0, name);
-    });
-  }
-
-  //---------------------------------------------------------------------------
-
-  /*
-   * Handler for the chmod() system call.
-   * path: the path to the file
-   * mode: the desired permissions
-   * cb: a callback of the form cb(err), where err is the Posix return code.
-   */
-  function chmod(fpath, mode, cb) {
-    var fpath = path.join(srcRoot, fpath);
-    return fs.chmod(fpath, mode, function chmodCb(err) {
-      if (err)
-        return cb(-excToErrno(err));
-      return cb(0);
-    });
+    switch (typeof info.node) {
+    case 'undefined':
+      err = -2; // -ENOENT
+      break;
+      
+    case 'string': // file
+      err = -22; // -EINVAL
+      break;
+    
+    case 'object': // directory
+      var i = 0;
+      for (key in info.node)
+        names[i++] = key;
+      break;
+      
+    default:
+      break;
+    }
+    cb( err, names );
   }
 
   //---------------------------------------------------------------------------
@@ -131,6 +161,7 @@ module.exports = function(srcRoot, mountPoint, stream) {
     }
   }
 
+
   //---------------------------------------------------------------------------
 
   /*
@@ -139,12 +170,16 @@ module.exports = function(srcRoot, mountPoint, stream) {
    * flags: requested access flags as documented in open(2)
    * cb: a callback of the form cb(err, [fh]), where err is the Posix return code
    *     and fh is an optional numerical file handle, which is passed to subsequent
-   *     read(), write(), and release() calls (set to 0 if fh is unspecified)
+   *     read(), write(), and release() calls.
    */
   function open(fpath, flags, cb) {
-    var fpath = path.join(srcRoot, fpath);
-    var flags = convertOpenFlags(flags);
-    cb(0, "");
+    var err = 0; // assume success
+    var info = lookup(obj, fpath);
+    
+    if (typeof info.node === 'undefined') {
+      err = -2; // -ENOENT
+    }
+    cb(err); // we don't return a file handle, so fuse4js will initialize it to 0
   }
 
   //---------------------------------------------------------------------------
@@ -176,11 +211,51 @@ module.exports = function(srcRoot, mountPoint, stream) {
    * cb: a callback of the form cb(err), where err is the Posix return code.
    *     A positive value represents the number of bytes actually written.
    */
-  function write(fpath, offset, len, buf, fh, cb) {
-    if (stream!=undefined) {
-      stream.sockets.send(htmlifyAnsi(buf.toString()));
+  function write(path, offset, len, buf, fh, cb) {
+    var err = 0; // assume success
+    var info = lookup(obj, path);
+    var file = info.node;
+    var name = info.name;
+    var parent = info.parent;
+    var beginning, blank = '', data, ending='', numBlankChars;
+    
+    switch (typeof file) {
+    case 'undefined':
+      err = -2; // -ENOENT
+      break;
+
+    case 'object': // directory
+      err = -1; // -EPERM
+      break;
+        
+    case 'string': // a string treated as ASCII characters
+      data = buf.toString('ascii'); // read the new data
+      if (offset < file.length) {
+        beginning = file.substring(0, offset);
+        if (offset + data.length < file.length) {
+          ending = file.substring(offset + data.length, file.length)
+        }
+      } else {
+        beginning = file;
+        numBlankChars = offset - file.length;
+        while (numBlankChars--) blank += ' ';
+      }
+      delete parent[name];
+      /* write to the object and to the stream; need to adjust the 
+         data.length that is sent back vs. what is actually read
+      */
+      parent[name] = (beginning + blank + data + ending).slice(-10);
+      console.log(parent[name])
+      if (stream!=undefined) {
+        stream.sockets.send(htmlifyAnsi(buf.toString()));
+      }
+      err = data.length;
+      break;
+    
+    default:
+      break;
     }
-    cb(len);
+    cb(err);
   }
 
   //---------------------------------------------------------------------------
@@ -206,12 +281,27 @@ module.exports = function(srcRoot, mountPoint, stream) {
    *     read(), write(), and release() calls (it's set to 0 if fh is unspecified)
    */
   function create (fpath, mode, cb) {
-    var fpath = path.join(srcRoot, fpath);
-    fs.open(fpath, 'w', mode, function openCb(err, fd) {
-      if (err)      
-        return cb(-excToErrno(err));
-      cb(0, fd);    
-    });
+    var err = 0; // assume success
+    var info = lookup(obj, fpath);
+
+    switch (typeof info.node) {
+    case 'undefined':
+      if (info.parent !== null) {
+        info.parent[info.name] = '';
+      } else {
+        err = -2; // -ENOENT      
+      }
+      break;
+
+    case 'string': // existing file
+    case 'object': // existing directory
+      err = -17; // -EEXIST
+      break;
+        
+    default:
+      break;
+    }
+    cb(err);
   }
 
   //---------------------------------------------------------------------------
@@ -222,13 +312,28 @@ module.exports = function(srcRoot, mountPoint, stream) {
    * cb: a callback of the form cb(err), where err is the Posix return code.
    */
   function unlink(fpath, cb) {
-    var fpath = path.join(srcRoot, fpath);
-    fs.unlink(fpath, function unlinkCb(err) {
-      if (err)      
-        return cb(-excToErrno(err));
-      cb(0);
-    });
+    var err = 0; // assume success
+    var info = lookup(obj, fpath);
+    
+    switch (typeof info.node) {
+    case 'undefined':
+      err = -2; // -ENOENT      
+      break;
+
+    case 'object': // existing directory
+      err = -1; // -EPERM
+      break;
+
+    case 'string': // existing file
+      delete info.parent[info.name];
+      break;
+      
+    default:
+      break;
+    }
+    cb(err);
   }
+
 
   //---------------------------------------------------------------------------
 
@@ -239,13 +344,20 @@ module.exports = function(srcRoot, mountPoint, stream) {
    * cb: a callback of the form cb(err), where err is the Posix return code.
    */
   function rename(src, dst, cb) {
-    src = path.join(srcRoot, src);
-    dst = path.join(srcRoot, dst);
-    fs.rename(src, dst, function renameCb(err) {
-      if (err)      
-        return cb(-excToErrno(err));
-      cb(0);
-    });
+    var err = -2; // -ENOENT assume failure
+    var source = lookup(obj, src), dest;
+    
+    if (typeof source.node !== 'undefined') { // existing file or directory
+      dest = lookup(obj, dst);
+      if (typeof dest.node === 'undefined' && dest.parent !== null) {
+        dest.parent[dest.name] = source.node;
+        delete source.parent[source.name];
+        err = 0;
+      } else {
+        err = -17; // -EEXIST
+      }
+    }   
+    cb(err);
   }
 
   //---------------------------------------------------------------------------
@@ -257,12 +369,13 @@ module.exports = function(srcRoot, mountPoint, stream) {
    * cb: a callback of the form cb(err), where err is the Posix return code.
    */
   function mkdir(fpath, mode, cb) {
-    var fpath = path.join(srcRoot, fpath);
-    fs.mkdir(fpath, mode, function mkdirCb(err) {
-      if (err)      
-        return cb(-excToErrno(err));
-      cb(0);
-    });
+    var err = -2; // -ENOENT assume failure
+    var dst = lookup(obj, fpath), dest;
+    if (typeof dst.node === 'undefined' && dst.parent != null) {
+      dst.parent[dst.name] = {};
+      err = 0;
+    }
+    cb(err);
   }
 
   //---------------------------------------------------------------------------
@@ -273,13 +386,13 @@ module.exports = function(srcRoot, mountPoint, stream) {
    * cb: a callback of the form cb(err), where err is the Posix return code.
    */
   function rmdir(fpath, cb) {
-    var fpath = path.join(srcRoot, fpath);
-    fs.rmdir(fpath, function rmdirCb(err) {
-      if (err)      
-        return cb(-excToErrno(err));
-      cb(0);
-    });
-
+    var err = -2; // -ENOENT assume failure
+    var dst = lookup(obj, fpath), dest;
+    if (typeof dst.node === 'object' && dst.parent != null) {
+      delete dst.parent[dst.name];
+      err = 0;
+    }
+    cb(err);
   }
 
   //---------------------------------------------------------------------------
@@ -317,8 +430,6 @@ module.exports = function(srcRoot, mountPoint, stream) {
   var handlers = {
     getattr: getattr,
     readdir: readdir,
-    readlink: readlink,
-    chmod: chmod,
     open: open,
     read: read,
     write: write,
@@ -331,7 +442,6 @@ module.exports = function(srcRoot, mountPoint, stream) {
     init: init,
     destroy: destroy
   };
-
   f4js.start(mountPoint, handlers, undefined);
   
 }
