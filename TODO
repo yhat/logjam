@@ -1,0 +1,7 @@
+TODO
+-----
+- switch from socket.io to ws
+- virtualize read/writes
+- JSON blob filetree
+- handle open/release/read
+
