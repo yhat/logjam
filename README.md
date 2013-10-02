@@ -1,9 +1,7 @@
-
 # What is it?
 
 # How do I use it?
-- Install fuse
-------------
+###Install fuse
 Linux:
 * Fuse4js has been tested on Ubuntu 10.04, Ubuntu 12.04  and CentOS 5.x (all 32-bit).
 * GNU Compiler toolchain, including gcc and g++
@@ -17,7 +15,7 @@ Linux:
 OSX:
 * install [osxfuse](http://osxfuse.github.com/)
 
-- Run it
+###Run it
 	./bin/tailor ./path/to/logs /path/to/mount/location 3000
 
 
