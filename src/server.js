@@ -62,8 +62,9 @@ module.exports = function(port, logdir) {
       if (!_.has(tails, model)) {
         tails[model] = startTail(model);
         tails[model].stdout.on('data', function(d) {
-          var d = ansi.toHtml(d.toString().trim());
-          io.sockets.in(model).emit('logthis', d);
+          var line = ansi.toHtml(d.toString().trim());
+          // TODO: convert to HTML if not ansi
+          io.sockets.in(model).emit('logthis', line);
         });
       } else {
         console.log("tail already exists: " + model);
