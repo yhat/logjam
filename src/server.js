@@ -7,8 +7,10 @@ var express = require('express')
   , http = require('http')
   , path = require('path')
   , spawn = require('child_process').spawn
-  , _ = require('underscore');
+  , _ = require('underscore')
+  , ansiToHtml= require('ansi-to-html');;
 
+var ansi = new antiToHtml();
 
 module.exports = function(port, logdir) {
 
@@ -60,7 +62,8 @@ module.exports = function(port, logdir) {
       if (!_.has(tails, model)) {
         tails[model] = startTail(model);
         tails[model].stdout.on('data', function(d) {
-          io.sockets.in(model).emit('logthis', d.toString().trim());
+          var d = ansi.toHtml(d.toString().trim());
+          io.sockets.in(model).emit('logthis', d);
         });
       } else {
         console.log("tail already exists: " + model);
