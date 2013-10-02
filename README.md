@@ -15,7 +15,13 @@ Linux:
 OSX:
 * install [osxfuse](http://osxfuse.github.com/)
 
+###Install tailor
+	$ git clone git@github.com:yhat/tailor.git
+	npm install
+
 ###Run it
 	./bin/tailor ./path/to/logs /path/to/mount/location 3000
 
+###Open http://localhost:3000
 
+###Put stuff in your logs
