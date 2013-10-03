@@ -17,9 +17,13 @@ htmlifyAnsi = function(line) {
   return line;
 }
 
-module.exports = function(srcRoot, mountPoint, stream) {
+module.exports = function(srcRoot, mountPoint, stream, options) {
 
   obj = walk(srcRoot);
+  options = options || {};
+  options.html = options.html || false;
+  rollingChars = options.rollingChars || 1000;
+  rollingChars = rollingChars * -1;
   console.log(obj);
   console.log($("diskutil unmount " + mountPoint));
 
@@ -195,8 +199,20 @@ module.exports = function(srcRoot, mountPoint, stream) {
    *     A positive value represents the number of bytes actually read.
    */
   function read(fpath, offset, len, buf, fh, cb) {
-    // currently defaults to returning nothing
-    cb(0);
+    var err = 0
+      , info = lookup(obj, fpath)
+      , file = info.node; 
+    
+    if (typeof(file)=='undefined') {
+      err = -2;
+    } else if (typeof(file)=='object') {
+      err = -1;
+    } else if (typeof(file)=='string') {
+      data = file;
+      buf.write(data, 0, data.length, 'ascii');
+      err = data.length;
+    }
+    cb(err);
   }
 
   //---------------------------------------------------------------------------
@@ -211,51 +227,30 @@ module.exports = function(srcRoot, mountPoint, stream) {
    * cb: a callback of the form cb(err), where err is the Posix return code.
    *     A positive value represents the number of bytes actually written.
    */
-  function write(path, offset, len, buf, fh, cb) {
-    var err = 0; // assume success
-    var info = lookup(obj, path);
-    var file = info.node;
-    var name = info.name;
-    var parent = info.parent;
-    var beginning, blank = '', data, ending='', numBlankChars;
-    
-    switch (typeof file) {
-    case 'undefined':
-      err = -2; // -ENOENT
-      break;
+  function write(fpath, offset, len, buf, fh, cb) {
+    var info = lookup(obj, fpath)
+      , file = info.node
+      , name = info.name
+      , fileParent = info.parent;
 
-    case 'object': // directory
-      err = -1; // -EPERM
-      break;
-        
-    case 'string': // a string treated as ASCII characters
-      data = buf.toString('ascii'); // read the new data
-      if (offset < file.length) {
-        beginning = file.substring(0, offset);
-        if (offset + data.length < file.length) {
-          ending = file.substring(offset + data.length, file.length)
-        }
-      } else {
-        beginning = file;
-        numBlankChars = offset - file.length;
-        while (numBlankChars--) blank += ' ';
-      }
-      delete parent[name];
-      /* write to the object and to the stream; need to adjust the 
-         data.length that is sent back vs. what is actually read
-      */
-      parent[name] = (beginning + blank + data + ending).slice(-10);
-      console.log(parent[name])
-      if (stream!=undefined) {
-        stream.sockets.send(htmlifyAnsi(buf.toString()));
-      }
-      err = data.length;
-      break;
-    
-    default:
-      break;
-    }
-    cb(err);
+   if (typeof(file)=='undefined') {
+     err = -2;
+   } else if (typeof(file)=='object') {
+     err = -1;
+   } else if (typeof(file)=='string') {
+     data = buf.toString();
+     fileParent[name] = (fileParent[name].toString() + data).slice(rollingChars);
+     if (stream!=undefined) {
+       if (options.html==true) {
+         stream.sockets.send(htmlifyAnsi(data));
+       } else {
+         stream.sockets.send(data);
+       }
+     }
+     err = data.length;
+   }
+   cb(err);
+
   }
 
   //---------------------------------------------------------------------------

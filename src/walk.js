@@ -1,3 +1,17 @@
+/*
+ * Really simple script for synchronously traversing a directory
+ * and returning a nested file structure
+ *
+ * {
+ *  "file1": "",
+ *  "file2:" "",
+ *  "dir1": {
+ *      "file3": "",
+ *      "file4": ""
+ *    }
+ * }
+ */
+
 var fs = require("fs")
   , path = require("path");
 
