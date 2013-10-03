@@ -24,7 +24,6 @@ module.exports = function(srcRoot, mountPoint, stream, options) {
   options.html = options.html || false;
   rollingChars = options.rollingChars || 1000;
   rollingChars = rollingChars * -1;
-  console.log(obj);
   console.log($("diskutil unmount " + mountPoint));
 
   //---------------------------------------------------------------------------

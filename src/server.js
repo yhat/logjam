@@ -39,7 +39,8 @@ module.exports = function(logdir, mountdir, port) {
   });
 
   var io = require('socket.io').listen(server, { log: false })
-    , logstream = require('./logstream')(logdir, mountdir, io);
+    , options = { html: true }
+    , logstream = require('./logstream')(logdir, mountdir, io, options);
 
   io.sockets.on('connection', function(socket) {
 
