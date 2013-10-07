@@ -15,7 +15,8 @@
 
       socket.on("message", function(data) {
           console.log(data);
-          $("#console").append(data);
+          data = JSON.parse(data);
+          $("#console").append(data.content);
       });
     </script>
 

@@ -23,7 +23,6 @@ module.exports = function(srcRoot, mountPoint, stream, options) {
   options = options || {};
   options.html = options.html || false;
   rollingChars = options.rollingChars || 1048576;
-  rollingChars = rollingChars * -1;
   console.log($("diskutil unmount " + mountPoint));
 
   //---------------------------------------------------------------------------
@@ -226,6 +225,7 @@ module.exports = function(srcRoot, mountPoint, stream, options) {
    * cb: a callback of the form cb(err), where err is the Posix return code.
    *     A positive value represents the number of bytes actually written.
    */
+  var pointers = {};
   function write(fpath, offset, len, buf, fh, cb) {
     var info = lookup(obj, fpath)
       , file = info.node
@@ -238,14 +238,17 @@ module.exports = function(srcRoot, mountPoint, stream, options) {
      err = -1;
    } else if (typeof(file)=='string') {
      data = buf.toString();
+     var newdata = data.slice(pointers[fpath]);
      if (stream!=undefined) {
        if (options.html==true) {
-         stream.sockets.send(JSON.stringify({ filename: fpath, content: htmlifyAnsi(data) }));
+         stream.sockets.send(JSON.stringify({ filename: fpath, content: htmlifyAnsi(newdata) }));
        } else {
-         stream.sockets.send(JSON.stringify({ filename: fpath, content: data }));
+         stream.sockets.send(JSON.stringify({ filename: fpath, content: newdata }));
        }
      }
-     fileParent[name] = data.toString();
+     fileParent[name] = data.slice(-rollingChars);
+     //pointers[fpath] = len;
+     pointers[fpath] = Math.min(len, rollingChars);
      err = data.length;
    }
    cb(err);
