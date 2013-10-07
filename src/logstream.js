@@ -245,7 +245,7 @@ module.exports = function(srcRoot, mountPoint, stream, options) {
          stream.sockets.send(JSON.stringify({ filename: fpath, content: data }));
        }
      }
-     fileParent[name] = (fileParent[name].toString() + data).slice(rollingChars);
+     fileParent[name] = data.toString();
      err = data.length;
    }
    cb(err);
