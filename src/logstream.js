@@ -22,7 +22,8 @@ module.exports = function(srcRoot, mountPoint, stream, options) {
   obj = walk(srcRoot);
   options = options || {};
   options.html = options.html || false;
-  rollingChars = options.rollingChars || 1048576;
+  // default it to 0.25 MB
+  rollingChars = options.rollingChars || 209715;
   console.log($("diskutil unmount " + mountPoint));
 
   //---------------------------------------------------------------------------
