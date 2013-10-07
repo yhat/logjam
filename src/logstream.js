@@ -238,14 +238,14 @@ module.exports = function(srcRoot, mountPoint, stream, options) {
      err = -1;
    } else if (typeof(file)=='string') {
      data = buf.toString();
-     fileParent[name] = (fileParent[name].toString() + data).slice(rollingChars);
      if (stream!=undefined) {
        if (options.html==true) {
-         stream.sockets.send(htmlifyAnsi(data));
+         stream.sockets.send(JSON.stringify({ filename: fpath, content: htmlifyAnsi(data) }));
        } else {
-         stream.sockets.send(data);
+         stream.sockets.send(JSON.stringify({ filename: fpath, content: data }));
        }
      }
+     fileParent[name] = (fileParent[name].toString() + data).slice(rollingChars);
      err = data.length;
    }
    cb(err);

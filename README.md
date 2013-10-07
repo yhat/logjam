@@ -25,3 +25,7 @@ OSX:
 ###Open http://localhost:3000
 
 ###Put stuff in your logs
+
+# Bugs
+- logfile are compounding on reading/writing
+
