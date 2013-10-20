@@ -10,21 +10,14 @@ var fs = require('fs')
 
 require("shellscript").globalize();
 
-htmlifyAnsi = function(line) {
-  line = line.trim();
-  if (! /<p>/.test(line)) {
-    line = "<p>" + line + "</p>";
-  }
-  return line;
-}
 
 module.exports = function(srcRoot, mountPoint, options) {
 
   obj = walk(srcRoot);
   options = options || {};
   options.html = options.html || false;
-  // default it to 0.25 MB
-  rollingChars = options.rollingChars || 209715;
+  // default it to 1 byte
+  rollingChars = options.rollingChars || 1;
   console.log($("diskutil unmount " + mountPoint));
 
   //---------------------------------------------------------------------------
