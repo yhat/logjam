@@ -3,7 +3,6 @@ var fs = require('fs')
   , f4js = require('fuse4js')
   , path = require('path')
   , walk = require('./walk')
-  , ansi = require('ansi-to-html')()
   , srcRoot = '/'
   , obj = {}
   , options = {};
