@@ -1,4 +1,5 @@
 var fs = require('fs')
+  , _ = require('underscore')
   , f4js = require('fuse4js')
   , path = require('path')
   , walk = require('./walk')
@@ -17,7 +18,7 @@ htmlifyAnsi = function(line) {
   return line;
 }
 
-module.exports = function(srcRoot, mountPoint, stream, options) {
+module.exports = function(srcRoot, mountPoint, options) {
 
   obj = walk(srcRoot);
   options = options || {};
@@ -239,14 +240,15 @@ module.exports = function(srcRoot, mountPoint, stream, options) {
      err = -1;
    } else if (typeof(file)=='string') {
      data = buf.toString();
-     var newdata = data.slice(pointers[fpath]);
-     if (stream!=undefined) {
-       if (options.html==true) {
-         stream.sockets.send(JSON.stringify({ filename: fpath, content: htmlifyAnsi(newdata) }));
-       } else {
-         stream.sockets.send(JSON.stringify({ filename: fpath, content: newdata }));
-       }
-     }
+     var newdata = data.slice(pointers[fpath])
+       , pkg = { filename: fpath, content: newdata };
+
+     // send the package out to each client
+     _.each(connections, function(conn) {
+       conn.send(pkg);
+     });
+     
+     // handle fs related activities  
      fileParent[name] = data.slice(-rollingChars);
      //pointers[fpath] = len;
      pointers[fpath] = Math.min(len, rollingChars);

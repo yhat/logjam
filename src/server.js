@@ -1,16 +1,20 @@
-
 /**
  * Module dependencies.
  */
 
 var express = require('express')
   , http = require('http')
-  , path = require('path');
+  , path = require('path')
+  , uuid = require('uuid');
+
+// We need to keep track of our client connections so we can 
+// push log updates as needed.
+GLOBAL.connections = {};
 
 
 module.exports = function(logdir, mountdir, port) {
 
-  var app = express();
+  var app = express()
 
   // all environments
   app.set('port', port || 3000);
@@ -32,22 +36,41 @@ module.exports = function(logdir, mountdir, port) {
     res.render('index', { title: "Logs" });
   });
 
+  app.get('/events', function(req, res) {
+    // keep the connection open indefinitely
+    req.socket.setTimeout(Infinity);
+
+    // create a way for us to push data to the client
+    var conn = {
+      id: uuid.v4(),
+      send: function(data) {
+        var body  = 'data: ' + JSON.stringify(data) + '\n\n';
+        res.write(body);
+      }
+    };
+    connections[conn.id] = conn;
+    
+    res.writeHead(200, {
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache',
+      'Connection': 'keep-alive',
+      'X-Accel-Buffering': 'no' // Disable buffering for nginx
+    });
+    res.write('\n');
+
+    req.on('close', function() {
+      delete connections[conn.id];
+    });
+
+  });
+
   var server = require('http').createServer(app);
 
   server.listen(app.get('port'), function(){
     console.log("Express server listening on port " + app.get('port'));
   });
-
-  var io = require('socket.io').listen(server, { log: false })
-    , options = { html: true }
-    , logstream = require('./logstream')(logdir, mountdir, io, options);
-
-  io.sockets.on('connection', function(socket) {
-
-    socket.on("message", function(data) {
-      console.log("new message: " + data);
-    });
-
-  });
+  
+  var options = { html: false }
+    , logstream = require('./logstream')(logdir, mountdir, options);
 
 };
