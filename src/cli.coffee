@@ -20,7 +20,7 @@ Example:
 {docopt} = require 'docopt', version: package_json.version
 options = docopt doc
 
-logdir = options['<logdir>'] || "/Users/glamp/repos/yhat/enterprise/logs"
+logdir = options['<logdir>']
 port = options['<port>'] || 3000
 
 server logdir, port

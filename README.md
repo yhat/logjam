@@ -25,8 +25,6 @@ OSX:
 
 ### Install tailor
 ```bash
-$ npm install tailor
-OR
 $ git clone git@github.com:yhat/tailor.git
 $ npm install
 ```
