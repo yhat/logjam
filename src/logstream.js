@@ -3,21 +3,25 @@ var fs = require('fs')
   , f4js = require('fuse4js')
   , path = require('path')
   , walk = require('./walk')
-  , srcRoot = '/'
+  , srcRoot = ''
+  , mountPoint = null
   , obj = {}
   , options = {};
 
 require("shellscript").globalize();
 
 
-module.exports = function(srcRoot, mountPoint, options) {
-
-  obj = walk(srcRoot);
+module.exports = function(srcRoot, options) {
+  mountPoint = srcRoot;
+  // obj = walk(srcRoot);
+  obj = {};
   options = options || {};
   options.html = options.html || false;
   // default it to 1 byte
   rollingChars = options.rollingChars || 1;
-  console.log($("diskutil unmount " + mountPoint));
+  if (process.env["NODE_ENV"]=="development") {
+    console.log($("diskutil unmount " + mountPoint));
+  }
 
   //---------------------------------------------------------------------------
 

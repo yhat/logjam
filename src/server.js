@@ -5,16 +5,19 @@
 var express = require('express')
   , http = require('http')
   , path = require('path')
-  , uuid = require('uuid');
+  , uuid = require('uuid')
+  , minimatch = require('minimatch')
+  , ConvertAnsi = require('ansi-to-html')
+  , ansi = new ConvertAnsi();
 
 // We need to keep track of our client connections so we can 
 // push log updates as needed.
 GLOBAL.connections = {};
 
 
-module.exports = function(logdir, mountdir, port) {
+module.exports = function(logdir, port) {
 
-  var app = express()
+  var app = express();
 
   // all environments
   app.set('port', port || 3000);
@@ -25,7 +28,7 @@ module.exports = function(logdir, mountdir, port) {
   app.use(express.bodyParser());
   app.use(express.methodOverride());
   app.use(app.router);
-  app.use(express.static(path.join(__dirname, '/../public')));
+  app.use(express.static(path.join(__dirname, '..', 'public')));
 
   // development only
   if ('development' == app.get('env')) {
@@ -36,6 +39,11 @@ module.exports = function(logdir, mountdir, port) {
     res.render('index', { title: "Logs" });
   });
 
+  /*
+   * We're going to turn our logs into an event-stream. This is
+   * nice because you can just curl localhost:3000/events and it has
+   * the same affect as just doing tail -f *.log.
+   */
   app.get('/events', function(req, res) {
     // keep the connection open indefinitely
     req.socket.setTimeout(Infinity);
@@ -44,7 +52,22 @@ module.exports = function(logdir, mountdir, port) {
     var conn = {
       id: uuid.v4(),
       send: function(data) {
-        var body  = 'data: ' + JSON.stringify(data) + '\n\n';
+        if (req.query.pattern) {
+          // TODO: Need to slice because filename are coming back with / at start
+          if (!minimatch(data.filename.slice(1), req.query.pattern)) {
+            return;
+          }
+        }
+        if (req.query.html) {
+          data.content = ansi.toHtml(data.content);
+        }
+        var body;
+        if (req.query.raw) {
+          body = data.filename + "> " + data.content;
+        } else {
+          body = 'data: ' + JSON.stringify(data) + '\n\n';
+        }
+
         res.write(body);
       }
     };
@@ -70,7 +93,12 @@ module.exports = function(logdir, mountdir, port) {
     console.log("Express server listening on port " + app.get('port'));
   });
   
-  var options = { html: false }
-    , logstream = require('./logstream')(logdir, mountdir, options);
-
+  /*
+   * Initializing logstream. This is going to hijack the logdir using fuse
+   * and then redirect all writes back to the event-stream in /events
+   */
+  var options = {
+    html: false 
+  };
+  require('./logstream')(logdir, options);
 };

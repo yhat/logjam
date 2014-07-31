@@ -1,7 +1,15 @@
-# What is it?
+# tailor
 
-# How do I use it?
-###Install fuse
+## What is it?
+`tailor` turns your logfiles into a stream of events that you can access 
+over HTTP. It hijacks your file system commands using [`FUSE`]() and redirects
+them into an event-stream.
+
+
+*<gif goes here>*
+
+## How do I use it?
+### Install fuse
 Linux:
 * Fuse4js has been tested on Ubuntu 10.04, Ubuntu 12.04  and CentOS 5.x (all 32-bit).
 * GNU Compiler toolchain, including gcc and g++
@@ -15,17 +23,23 @@ Linux:
 OSX:
 * install [osxfuse](http://osxfuse.github.com/)
 
-###Install tailor
-	$ git clone git@github.com:yhat/tailor.git
-	npm install
+### Install tailor
+```bash
+$ npm install tailor
+OR
+$ git clone git@github.com:yhat/tailor.git
+$ npm install
+```
 
-###Run it
-	./bin/tailor ./path/to/logs /path/to/mount/location 3000
+### Run it
+	./bin/tailor ./path/to/logs 3000
 
-###Open http://localhost:3000
+### Open http://localhost:3000
+*<picture goes here>*
 
-###Put stuff in your logs
+### Put stuff in your logs
+*<picture goes here>*
 
 # Bugs
-- logfile are compounding on reading/writing
+- `echo "abcd" > /tmp/logdir/filename` doesn't work
 
