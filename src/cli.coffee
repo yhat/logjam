@@ -14,7 +14,7 @@ Description:
     #{package_json.description}
 
 Example:
-	tailor /path/to/your/logs
+	tailor /path/to/your/logs 
 
 """
 {docopt} = require 'docopt', version: package_json.version

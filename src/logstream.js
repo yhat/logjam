@@ -2,6 +2,7 @@ var fs = require('fs')
   , _ = require('underscore')
   , f4js = require('fuse4js')
   , path = require('path')
+  , mkdirp = require('mkdirp')
   , walk = require('./walk')
   , srcRoot = ''
   , mountPoint = null
@@ -12,6 +13,10 @@ require("shellscript").globalize();
 
 
 module.exports = function(srcRoot, options) {
+  if (! fs.existsSync(srcRoot)) {
+    console.log(srcRoot + " does not exist. Making directory");
+    mkdirp.sync(srcRoot);
+  }
   mountPoint = srcRoot;
   // obj = walk(srcRoot);
   obj = {};
@@ -19,9 +24,6 @@ module.exports = function(srcRoot, options) {
   options.html = options.html || false;
   // default it to 1 byte
   rollingChars = options.rollingChars || 1;
-  if (process.env["NODE_ENV"]=="development") {
-    console.log($("diskutil unmount " + mountPoint));
-  }
 
   //---------------------------------------------------------------------------
 
@@ -398,8 +400,7 @@ module.exports = function(srcRoot, options) {
    * cb: a callback to call when you're done initializing. It takes no arguments.
    */
   var init = function (cb) {
-    console.log("File system started at " + mountPoint);
-    console.log("To stop it, type this in another shell: diskutil unmount " + mountPoint);
+    console.log("To remove mount run: diskutil unmount " + mountPoint);
     cb();
   }
 
@@ -439,5 +440,14 @@ module.exports = function(srcRoot, options) {
     destroy: destroy
   };
   f4js.start(mountPoint, handlers, undefined);
-  
+  /*
+  process.on('exit', function() {
+    console.log("Removing disk mount...");
+    $("diskutil unmount " + mountPoint);
+    process.exit();
+  });
+  process.on('SIGINT', function() { 
+    process.exit();
+  });
+  */
 }
