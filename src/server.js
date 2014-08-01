@@ -89,17 +89,18 @@ module.exports = function(logdir, port) {
   });
   var server = require('http').createServer(app);
   server.listen(app.get('port'), function(){
+    // some senseless art...
     var art = fs.readFileSync(path.join(__dirname, 'art.txt')).toString();
     console.log(art);
-    console.log("Iniitalized and running on port " + app.get('port'));
+    console.log("Running on port " + app.get('port'));
   });
   
   /*
-   * Initializing logstream. This is going to hijack the logdir using fuse
+   * Initializing logstream. This is going to hijack the logdir using FUSE
    * and then redirect all writes back to the event-stream in /events
    */
   var options = {
-    html: false 
+    rollingBytes: 3000
   };
   require('./logstream')(logdir, options);
 };

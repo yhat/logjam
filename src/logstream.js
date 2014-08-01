@@ -21,9 +21,8 @@ module.exports = function(srcRoot, options) {
   // obj = walk(srcRoot);
   obj = {};
   options = options || {};
-  options.html = options.html || false;
   // default it to 1 byte
-  rollingChars = options.rollingChars || 1;
+  rollingBytes = options.rollingBytes || 1;
 
   //---------------------------------------------------------------------------
 
@@ -247,9 +246,9 @@ module.exports = function(srcRoot, options) {
      });
      
      // handle fs related activities  
-     fileParent[name] = data.slice(-rollingChars);
+     fileParent[name] = data.slice(-rollingBytes);
      //pointers[fpath] = len;
-     pointers[fpath] = Math.min(len, rollingChars);
+     pointers[fpath] = Math.min(len, rollingBytes);
      err = data.length;
    }
    cb(err);

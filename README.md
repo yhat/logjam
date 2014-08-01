@@ -32,7 +32,7 @@ $ npm install
 ### Run it
 	./bin/tailor ./path/to/logs 3000
 
-### Open http://localhost:3000
+### Open http://localhost:3000/
 *<picture goes here>*
 
 ### Put stuff in your logs
