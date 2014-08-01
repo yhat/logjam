@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": false,
   "scripts": {
-    "start": "node ./src/server.js"
+    "start": "./bin/tailor"
   },
   "bin": {
     "tailor": "./bin/tailor"
