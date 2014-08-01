@@ -4,6 +4,7 @@
 
 var express = require('express')
   , http = require('http')
+  , fs = require('fs')
   , path = require('path')
   , uuid = require('uuid')
   , minimatch = require('minimatch')
@@ -86,11 +87,11 @@ module.exports = function(logdir, port) {
     });
 
   });
-
   var server = require('http').createServer(app);
-
   server.listen(app.get('port'), function(){
-    console.log("Express server listening on port " + app.get('port'));
+    var art = fs.readFileSync(path.join(__dirname, 'art.txt')).toString();
+    console.log(art);
+    console.log("Iniitalized and running on port " + app.get('port'));
   });
   
   /*

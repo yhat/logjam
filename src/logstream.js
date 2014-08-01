@@ -441,6 +441,7 @@ module.exports = function(srcRoot, options) {
   };
   f4js.start(mountPoint, handlers, undefined);
   /*
+  // TODO: this doesn't work
   process.on('exit', function() {
     console.log("Removing disk mount...");
     $("diskutil unmount " + mountPoint);
