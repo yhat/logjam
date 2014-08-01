@@ -38,6 +38,10 @@ $ npm install
 ### Put stuff in your logs
 *<picture goes here>*
 
-# Bugs
+
+## Things you should know
+- `FUSE` kind of sucks
+
+## Bugs
 - `echo "abcd" > /tmp/logdir/filename` doesn't work
 
