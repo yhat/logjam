@@ -67,15 +67,18 @@ hijacks a directory's file operations and puts them all into an event stream.
 For example, let's say you have 3 apps running on upstart jobs. Their logfiles
 will show up in `/var/log/upstart/app1.log`, `/var/log/upstart/app2.log`, and
 `/var/log/upstart/app3.log`.
+
 ![var upstart logs]()
 
 That's fine and all but it's a little annoying to keep track of. *Especially if 
 you even want to get into the business of dynamically adding jobs*.
+
 ![logs of job logs]()
 
 So instead you can use `jam up` to redirect all of those logs into a stream! 
 You can take that stream anywhere. And it's easy to access via curl or any other
  HTTP client.
+
 ![curl jam]()
 
 ![](./public/images/mac-basketball.png)
