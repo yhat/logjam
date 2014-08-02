@@ -27,11 +27,24 @@ OSX:
 ### Install logjam
 ```bash
 $ npm install --save logjam
+$ jam --help
+Usage:
+    jam [options] <logdir> [<port>]
+
+Options:
+    --help
+    --version
+
+Description:
+    Jam all of your logs into an event-stream
+
+Example:
+    jam /path/to/your/logs
 ```
 
 ### Run it
 ```bash
-$ ./bin/jam ./path/to/logs 3000
+$ jam ./path/to/logs 3000
 ```
 
 ### Open http://localhost:3000/
