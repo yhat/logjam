@@ -1,7 +1,8 @@
-# tailor
+# logjam
+Jam all of your logs into an even-stream.
 
 ## What is it?
-`tailor` turns your logfiles into a stream of events that you can access 
+`logjam` turns your logfiles into a stream of events that you can access 
 over HTTP. It hijacks your file system commands using [`FUSE`]() and redirects
 them into an event-stream.
 
@@ -23,14 +24,14 @@ Linux:
 OSX:
 * install [osxfuse](http://osxfuse.github.com/)
 
-### Install tailor
+### Install logjam
 ```bash
-$ git clone git@github.com:yhat/tailor.git
+$ git clone git@github.com:yhat/logjam.git
 $ npm install
 ```
 
 ### Run it
-	./bin/tailor ./path/to/logs 3000
+	./bin/logjam ./path/to/logs 3000
 
 ### Open http://localhost:3000/
 *<picture goes here>*

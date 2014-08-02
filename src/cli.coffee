@@ -4,7 +4,7 @@ package_json = JSON.parse fs.readFileSync path.join(__dirname, '../package.json'
 server = require './server'
 doc = """
 Usage:
-    tailor [options] <logdir> [<port>] 
+    jam [options] <logdir> [<port>] 
 
 Options:
     --help
@@ -14,7 +14,7 @@ Description:
     #{package_json.description}
 
 Example:
-	tailor /path/to/your/logs 
+	jam /path/to/your/logs 
 
 """
 {docopt} = require 'docopt', version: package_json.version

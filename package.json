@@ -1,12 +1,13 @@
 {
-  "name": "tailor",
+  "name": "logjam",
+  "description": "Jam all of your logs into an event-stream",
   "version": "0.0.1",
   "private": false,
   "scripts": {
-    "start": "./bin/tailor"
+    "start": "./bin/jam"
   },
   "bin": {
-    "tailor": "./bin/tailor"
+    "tailor": "./bin/jam"
   },
   "dependencies": {
     "ansi-to-html": "^0.2.0",

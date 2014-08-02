@@ -3,7 +3,7 @@
 # vagrant package
 # s3cmd put -P package.box s3://yhat-build-dev/boxes/vagrant/scienceops/3.9.0/package.box
 
-BOX_NAME = ENV['BOX_NAME'] || "tailor-box"
+BOX_NAME = ENV['BOX_NAME'] || "logjam-box"
 VAGRANTFILE_API_VERSION = "2"
 Vagrant.require_version ">= 1.5.0"
 
@@ -14,7 +14,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = "jess/ubuntu-yhat-essentials"
   config.vm.box_check_update = true
 
-  config.vm.provision :shell, :inline => "/tailor/provision/system"
+  config.vm.provision :shell, :inline => "/logjam/provision/system"
 
   config.vm.provider :virtualbox do |vb|
     vb.name = BOX_NAME
@@ -24,6 +24,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
 
-  config.vm.synced_folder ".", "/tailor"
+  config.vm.synced_folder ".", "/logjam"
   config.vm.network "forwarded_port", guest: 3000, host: 3000, auto_correct: true
 end
