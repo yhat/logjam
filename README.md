@@ -31,7 +31,9 @@ $ npm install
 ```
 
 ### Run it
-	./bin/logjam ./path/to/logs 3000
+```bash
+$ ./bin/jam ./path/to/logs 3000
+```
 
 ### Open http://localhost:3000/
 *<picture goes here>*
