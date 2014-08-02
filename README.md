@@ -50,6 +50,9 @@ Example:
 $ jam up /path/to/logs 3000
 # connect the logs
 $ jam tail localhost 3000
+$ curl localhost:3000/events
+$ curl localhost:3000/events?raw=true
+$ curl localhost:3000/events?html=true
 ```
 
 ### Open http://localhost:3000/
