@@ -7,7 +7,7 @@
     "start": "./bin/jam"
   },
   "bin": {
-    "tailor": "./bin/jam"
+    "jam": "./bin/jam"
   },
   "dependencies": {
     "ansi-to-html": "^0.2.0",
