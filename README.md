@@ -8,6 +8,7 @@ them into an event-stream.
 
 
 *<gif goes here>*
+![](./public/images/mac-basketball.png)
 
 ## How do I use it?
 ### Install fuse
