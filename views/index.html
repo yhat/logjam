@@ -4,6 +4,22 @@
     <title>{{ title }}</title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
     <script src="/javascripts/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+    <style>
+      p {
+        color: #2ECC40;
+      }
+      pre {
+        max-height: 200px;
+        max-width: 700px;
+        overflow: auto;
+        background-color: #111111;
+        white-space: pre-wrap;       /* CSS 3 */
+        white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+        white-space: -pre-wrap;      /* Opera 4-6 */
+        white-space: -o-pre-wrap;    /* Opera 7 */
+        word-wrap: break-word;       /* Internet Explorer 5.5+ */
+        }
+    </style>
   </head>
   <body>
     <h1>{{ title }}</h1>
@@ -170,6 +186,7 @@
               $("#" + terminal_id).append("<pre></pre>");
             }
             $("#" + terminal_id + " pre").append("<p>" + data.content + "</p>");
+            $("#" + terminal_id).scrollTop($("#" + terminal_id)[0].scrollHeight);
         }, false);
 
         es.addEventListener("open", function(e) {
