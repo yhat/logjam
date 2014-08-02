@@ -81,7 +81,7 @@ You can take that stream anywhere. And it's easy to access via curl or any other
 
 ![curl jam]()
 
-![](./public/images/mac-basketball.png)
+<img src="./public/images/mac-basketball.png" height="200px">
 
 *Jamming your friends up isn't cool*
 
