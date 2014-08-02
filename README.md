@@ -6,12 +6,10 @@ Jam all of your logs into an even-stream.
 over HTTP. It hijacks your file system commands using [`FUSE`]() and redirects
 them into an event-stream.
 
-
 *<gif goes here>*
-![](./public/images/mac-basketball.png)
 
-## How do I use it?
-### Install fuse
+## Installation
+### Install FUSE
 Linux:
 * Fuse4js has been tested on Ubuntu 10.04, Ubuntu 12.04  and CentOS 5.x (all 32-bit).
 * GNU Compiler toolchain, including gcc and g++
@@ -45,6 +43,7 @@ Example:
     jam tail localhost 3000 
 ```
 
+## Quickstart
 ### Run it
 ```bash
 # serve up some logs
@@ -58,6 +57,33 @@ $ jam tail localhost 3000
 
 ### Put stuff in your logs
 *<picture goes here>*
+
+
+## Usage
+### `jam up`
+Jamming your friends up isn't cool, but jamming up your logs is. `jam up` 
+hijacks a directory's file operations and puts them all into an event stream.
+
+For example, let's say you have 3 apps running on upstart jobs. Their logfiles
+will show up in `/var/log/upstart/app1.log`, `/var/log/upstart/app2.log`, and
+`/var/log/upstart/app3.log`.
+![var upstart logs]()
+
+That's fine and all but it's a little annoying to keep track of. *Especially if 
+you even want to get into the business of dynamically adding jobs*.
+![logs of job logs]()
+
+So instead you can use `jam up` to redirect all of those logs into a stream! 
+You can take that stream anywhere. And it's easy to access via curl or any other
+ HTTP client.
+![curl jam]()
+
+![](./public/images/mac-basketball.png)
+*Jamming your friends up isn't cool*
+
+### `jam tail`
+Super simple, almost unneccessary. `jam tail` hooks up with a `jam up` stream 
+and then writes any data back to `stdout`.
 
 
 ## Things you should know
