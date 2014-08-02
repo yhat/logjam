@@ -26,8 +26,7 @@ OSX:
 
 ### Install logjam
 ```bash
-$ git clone git@github.com:yhat/logjam.git
-$ npm install
+$ npm install --save logjam
 ```
 
 ### Run it
