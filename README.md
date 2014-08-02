@@ -44,7 +44,7 @@ Example:
 
 ### Run it
 ```bash
-$ jam ./path/to/logs 3000
+$ jam /path/to/logs 3000
 ```
 
 ### Open http://localhost:3000/
