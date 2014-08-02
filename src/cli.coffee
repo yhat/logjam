@@ -7,7 +7,7 @@ tailstream = require './tailstream'
 doc = """
 Usage:
     jam tail <host> <port>
-    jam up <logdir> [<port>] 
+    jam up <logdir> [<port>] [--raw] [--html]
 
 Options:
     --help
@@ -26,7 +26,7 @@ options = docopt doc
 if options['tail']
   host = options['<host>'] || "localhost"
   port = options['<port>'] || 3000
-  tailstream host, port
+  tailstream host, port, options['--raw'], options['--html']
 else if options['up']
   logdir = options['<logdir>']
   port = options['<port>'] || 3000
