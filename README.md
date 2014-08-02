@@ -28,8 +28,8 @@ OSX:
 $ npm install --save logjam
 $ jam --help
 Usage:
-    jam tail <host> <port>
-    jam up <logdir> [<port>]
+    jam tail <host> <port> [--raw] [--html]
+    jam up <logdir> [<port>] 
 
 Options:
     --help

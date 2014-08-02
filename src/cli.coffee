@@ -6,8 +6,8 @@ tailstream = require './tailstream'
 
 doc = """
 Usage:
-    jam tail <host> <port>
-    jam up <logdir> [<port>] [--raw] [--html]
+    jam tail <host> <port> [--raw] [--html]
+    jam up <logdir> [<port>]
 
 Options:
     --help
