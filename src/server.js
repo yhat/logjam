@@ -6,12 +6,13 @@ var express = require('express')
   , http = require('http')
   , fs = require('fs')
   , path = require('path')
+  , exphbs = require('express3-handlebars')
   , uuid = require('uuid')
   , minimatch = require('minimatch')
   , ConvertAnsi = require('ansi-to-html')
   , ansi = new ConvertAnsi();
 
-// We need to keep track of our client connections so we can 
+// We need to keep track of our client connections so we can
 // push log updates as needed.
 GLOBAL.connections = {};
 
@@ -22,14 +23,22 @@ module.exports = function(logdir, port) {
 
   // all environments
   app.set('port', port || 3000);
-  app.set('views', __dirname + '/../views');
-  app.set('view engine', 'ejs');
+  app.set('views', path.join(__dirname, '..', 'views'));
+  app.set('view engine', 'html');
+  app.engine('html', exphbs({
+    defaultLayout: 'main',
+    extname: '.html'
+    //helpers: helpers
+  }));
+  app.enable('view cache');
   app.use(express.favicon());
   app.use(express.logger('dev'));
   app.use(express.bodyParser());
   app.use(express.methodOverride());
   app.use(app.router);
+  // public AND node_modules (for CustomElements)
   app.use(express.static(path.join(__dirname, '..', 'public')));
+  app.use(express.static(path.join(__dirname, '..', 'node_modules')));
 
   // development only
   if ('development' == app.get('env')) {
@@ -38,6 +47,10 @@ module.exports = function(logdir, port) {
 
   app.get('/', function(req, res) {
     res.render('index', { title: "Logs" });
+  });
+
+  app.get('/terminus', function(req, res) {
+    res.render('home', { title: "Terminus Immedius" });
   });
 
   /*
@@ -73,7 +86,7 @@ module.exports = function(logdir, port) {
       }
     };
     connections[conn.id] = conn;
-    
+
     res.writeHead(200, {
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache',
@@ -94,13 +107,13 @@ module.exports = function(logdir, port) {
     console.log(art);
     console.log("Running on port " + app.get('port'));
   });
-  
+
   /*
    * Initializing logstream. This is going to hijack the logdir using FUSE
    * and then redirect all writes back to the event-stream in /events
    */
   var options = {
-    rollingBytes: 3000
+    rollingBytes: null
   };
   require('./logstream')(logdir, options);
 };

@@ -22,7 +22,7 @@ module.exports = function(srcRoot, options) {
   obj = {};
   options = options || {};
   // default it to 1 byte
-  rollingBytes = options.rollingBytes || 1;
+  rollingBytes = options.rollingBytes || 0;
 
   //---------------------------------------------------------------------------
 
