@@ -33,3 +33,10 @@ apt-get install -y libfuse-dev
 apt-get -y autoremove
 apt-get -y autoclean
 apt-get -y clean
+
+# add the jam job
+cp /logjam/demo/jam_job.conf /etc/init/jam_job.conf
+
+# install logjam
+# cd /logjam && npm install -g
+# jam --help

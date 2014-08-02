@@ -87,6 +87,7 @@ and then writes any data back to `stdout`.
 
 
 ## Things you should know
+- `fusermount -u /path/to/stuff/`
 - `FUSE` kind of sucks
 
 ## Bugs
