@@ -29,7 +29,8 @@ OSX:
 $ npm install --save logjam
 $ jam --help
 Usage:
-    jam [options] <logdir> [<port>]
+    jam tail <host> <port>
+    jam up <logdir> [<port>]
 
 Options:
     --help
@@ -39,12 +40,16 @@ Description:
     Jam all of your logs into an event-stream
 
 Example:
-    jam /path/to/your/logs
+    jam up /path/to/your/logs
+    jam tail localhost 3000 
 ```
 
 ### Run it
 ```bash
-$ jam /path/to/logs 3000
+# serve up some logs
+$ jam up /path/to/logs 3000
+# connect the logs
+$ jam tail localhost 3000
 ```
 
 ### Open http://localhost:3000/

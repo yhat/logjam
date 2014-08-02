@@ -2,9 +2,12 @@ fs = require 'fs'
 path = require 'path'
 package_json = JSON.parse fs.readFileSync path.join(__dirname, '../package.json')
 server = require './server'
+tailstream = require './tailstream'
+
 doc = """
 Usage:
-    jam [options] <logdir> [<port>] 
+    jam tail <host> <port>
+    jam up <logdir> [<port>] 
 
 Options:
     --help
@@ -20,8 +23,13 @@ Example:
 {docopt} = require 'docopt', version: package_json.version
 options = docopt doc
 
-logdir = options['<logdir>']
-port = options['<port>'] || 3000
-
-server logdir, port
-
+if options['tail']
+  host = options['<host>'] || "localhost"
+  port = options['<port>'] || 3000
+  tailstream host, port
+else if options['up']
+  logdir = options['<logdir>']
+  port = options['<port>'] || 3000
+  server logdir, port
+else
+  console.log doc
