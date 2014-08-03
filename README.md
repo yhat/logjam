@@ -6,8 +6,10 @@ Jam all of your logs into an even-stream.
 ## What is it?
 `logjam` turns your logfiles into a stream of events that you can access 
 over HTTP. It hijacks your file system commands using [`FUSE`](http://fuse.sourceforge.net/)
-and redirects them into an event-stream. This means when you write files to 
-a directory that's been logjammed, you're __actually writing to a stream__.
+and redirects them into an event-stream. 
+
+This means when you write files to a directory that's been logjammed, you're
+ __actually writing to a stream__.
 
 ## Installation
 ### Install FUSE
