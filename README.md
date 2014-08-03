@@ -91,6 +91,7 @@ You can take that stream anywhere. And it's easy to access via curl or any other
 ### `jam tail`
 Super simple, almost unneccessary. `jam tail` hooks up with a `jam up` stream 
 and then writes any data back to `stdout`.
+
 <img src="https://raw.githubusercontent.com/yhat/logjam/master/public/images/jam-tail-example.png" height="200px">
 
 ### `/events`
