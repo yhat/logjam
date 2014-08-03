@@ -8,8 +8,8 @@ Jam all of your logs into an even-stream.
 over HTTP. It hijacks your file system commands using [`FUSE`](http://fuse.sourceforge.net/)
 and redirects them into an event-stream. 
 
-This means when you write files to a directory that's been logjammed, you're
- __actually writing to a stream__.
+__This means when you write files to a directory that's been logjammed, you're
+actually writing to a stream__.
 
 ## Installation
 ### Install FUSE
