@@ -70,9 +70,9 @@ It's sort of like a log pirate.
 
 For example, let's say you have 3 apps running. Their logs will show up in 3
 different places. For example:
-    `/var/log/app1.log`
-    `/var/log/app2.log`
-    `/var/log/app3.log`
+    - `/var/log/app1.log`
+    - `/var/log/app2.log`
+    - `/var/log/app3.log`
 
 ![var logs](http://placehold.it/200x200)
 
@@ -82,6 +82,11 @@ you even want to get into the business of dynamically adding jobs*.
 ![logs of job logs](http://placehold.it/200x200)
 
 So instead you can use `jam up` to redirect all of those logs into a stream! 
+
+So when you're apps/jobs write to any file in `/tmp/logs`, __`logjam` is 
+actually turning this into a stream__. The file doesn't actually get written. 
+It's a virtual file!
+
 You can take that stream anywhere. And it's easy to access via curl or any other
  HTTP client.
 
