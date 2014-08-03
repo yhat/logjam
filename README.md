@@ -66,12 +66,15 @@ $ curl localhost:3000/events?html=true
 ### `jam up`
 Jamming your friends up isn't cool, but jamming up your logs is. `jam up` 
 hijacks a directory's file operations and puts them all into an event stream.
+It's sort of like a log pirate.
 
-For example, let's say you have 3 apps running on upstart jobs. Their logfiles
-will show up in `/var/log/upstart/app1.log`, `/var/log/upstart/app2.log`, and
-`/var/log/upstart/app3.log`.
+For example, let's say you have 3 apps running. Their logs will show up in 3
+different places. For example:
+    `/var/log/app1.log`
+    `/var/log/app2.log`
+    `/var/log/app3.log`
 
-![var upstart logs](http://placehold.it/200x200)
+![var logs](http://placehold.it/200x200)
 
 That's fine and all but it's a little annoying to keep track of. *Especially if 
 you even want to get into the business of dynamically adding jobs*.
@@ -86,7 +89,7 @@ You can take that stream anywhere. And it's easy to access via curl or any other
 
 <img src="https://raw.githubusercontent.com/yhat/logjam/master/public/images/mac-basketball.png" height="200px">
 
-*Jamming your friends up isn't cool*
+*PROTIP: Jamming your friends up isn't cool*
 
 ### `jam tail`
 Super simple, almost unneccessary. `jam tail` hooks up with a `jam up` stream 
