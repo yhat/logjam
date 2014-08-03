@@ -158,8 +158,9 @@ data: {"filename":"/hi.txt","content":"Hello!\n"}
 #### It does colors...
 ```bash
 $ node demo/color-spitter.js >> /tmp/logs/colors.yay
-<img src="https://raw.githubusercontent.com/yhat/logjam/master/public/images/it-does-colors.png" height="200px">
 ```
+
+<img src="https://raw.githubusercontent.com/yhat/logjam/master/public/images/it-does-colors.png" height="200px">
 
 ## Things you should know
 - `fusermount -u /path/to/stuff/`
