@@ -150,7 +150,6 @@ $ node demo/color-spitter.js >> /tmp/logs/colors.yay
 ```
 
 ## Things you should know
-- can't really run it twice...
 - `fusermount -u /path/to/stuff/`
 - `FUSE` kind of sucks
 
