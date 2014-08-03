@@ -84,7 +84,7 @@ You can take that stream anywhere. And it's easy to access via curl or any other
 
 ![curl jam](http://placehold.it/200x200)
 
-<img src="./public/images/mac-basketball.png" height="200px">
+<img src="https://raw.githubusercontent.com/yhat/logjam/master/public/images/mac-basketball.png" height="200px">
 
 *Jamming your friends up isn't cool*
 
