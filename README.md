@@ -70,6 +70,7 @@ It's sort of like a log pirate.
 
 For example, let's say you have 3 apps running. Their logs will show up in 3
 different places. For example:
+
     - `/var/log/app1.log`
     - `/var/log/app2.log`
     - `/var/log/app3.log`
