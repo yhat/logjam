@@ -108,7 +108,7 @@ What's great about this is that you can also just `CURL` the endpoint and it wil
 give you some nice looking output.
 
 
-Basic usage with event stream format
+#### Basic usage with event stream format
 ```bash
 $ curl http://localhost:3000/events
 
@@ -117,7 +117,7 @@ data: {"filename":"/hi.txt","content":"Hello!\n"}
 data: {"filename":"/hi.txt","content":"My name is, Greg.\n"}
 ```
 
-Escaping ANSI to HTML
+#### Escaping ANSI to HTML
 ```bash
 $ curl http://localhost:3000/events?html=true
 
@@ -128,7 +128,7 @@ data: {"filename":"/hi.txt","content":"My name is, Greg.\n"}
 data: {"filename":"/hi.txt","content":"<span style=\"color:#0AA\"> My favorite color is BLUE\n</span>"}
 ```
 
-Only sending raw data
+#### Only sending raw data
 ```bash
 $ curl http://localhost:3000/events?raw=true
 
@@ -136,7 +136,7 @@ $ curl http://localhost:3000/events?raw=true
 /hi.txt> My name is, Greg.
 ```
 
-Using a pattern
+#### Using a pattern
 ```bash
 $ curl http://localhost:3000/events?pattern=*.txt
 
@@ -144,7 +144,7 @@ data: {"filename":"/hi.txt","content":"Hello!\n"}
 ```
 
 
-### It does colors...
+#### It does colors...
 ```bash
 $ node demo/color-spitter.js >> /tmp/logs/colors.yay
 ```
