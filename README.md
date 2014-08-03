@@ -55,7 +55,7 @@ $ curl localhost:3000/events?raw=true
 $ curl localhost:3000/events?html=true
 ```
 
-### Open http://localhost:3000/
+### Open [http://localhost:3000/](http://localhost:3000/)
 *<picture goes here>*
 
 ### Put stuff in your logs
