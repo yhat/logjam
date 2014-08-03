@@ -1,12 +1,13 @@
 # logjam
 Jam all of your logs into an even-stream.
 
+*<gif goes here>*
+
 ## What is it?
 `logjam` turns your logfiles into a stream of events that you can access 
 over HTTP. It hijacks your file system commands using [`FUSE`](http://fuse.sourceforge.net/)
-and redirects them into an event-stream.
-
-*<gif goes here>*
+and redirects them into an event-stream. This means when you write files to 
+a directory that's been logjammed, you're __actually writing to a stream__.
 
 ## Installation
 ### Install FUSE
@@ -155,7 +156,7 @@ data: {"filename":"/hi.txt","content":"Hello!\n"}
 ```
 
 
-#### It does colors...
+#### It does colors
 ```bash
 $ node demo/color-spitter.js >> /tmp/logs/colors.yay
 ```
