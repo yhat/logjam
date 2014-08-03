@@ -66,17 +66,17 @@ module.exports = function(logdir, port) {
     var conn = {
       id: uuid.v4(),
       send: function(data) {
-        if (req.query.pattern) {
+        if (req.query.pattern=="true") {
           // TODO: Need to slice because filename are coming back with / at start
           if (!minimatch(data.filename.slice(1), req.query.pattern)) {
             return;
           }
         }
-        if (req.query.html) {
+        if (req.query.html=="true") {
           data.content = ansi.toHtml(data.content);
         }
         var body;
-        if (req.query.raw) {
+        if (req.query.raw=="true") {
           body = data.filename + "> " + data.content;
         } else {
           body = 'data: ' + JSON.stringify(data) + '\n\n';

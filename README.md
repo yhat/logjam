@@ -3,8 +3,8 @@ Jam all of your logs into an even-stream.
 
 ## What is it?
 `logjam` turns your logfiles into a stream of events that you can access 
-over HTTP. It hijacks your file system commands using [`FUSE`]() and redirects
-them into an event-stream.
+over HTTP. It hijacks your file system commands using [`FUSE`](http://fuse.sourceforge.net/)
+and redirects them into an event-stream.
 
 *<gif goes here>*
 
@@ -92,6 +92,62 @@ You can take that stream anywhere. And it's easy to access via curl or any other
 Super simple, almost unneccessary. `jam tail` hooks up with a `jam up` stream 
 and then writes any data back to `stdout`.
 
+### `/events`
+- __html__ (true/false): Flag for whether to send back HTML in stream.
+- __raw__ (true/false): Flag for whether or not to use event-stream protocol.
+- __pattern__ (glob): Pattern for matching a filename.
+
+This is the main endpoint for the app. All of the logs will get streamed here. 
+
+There are a few options for formatting and determining which files you want to
+seein your logs. Since this is a one way street (you're not writing anything back
+to the server), it's setup as an event stream and is compatible with
+[`EventSource`](https://developer.mozilla.org/en-US/docs/Web/API/EventSource). 
+
+What's great about this is that you can also just `CURL` the endpoint and it will
+give you some nice looking output.
+
+
+Basic usage with event stream format
+```bash
+$ curl http://localhost:3000/events
+
+data: {"filename":"/hi.txt","content":"Hello!\n"}
+
+data: {"filename":"/hi.txt","content":"My name is, Greg.\n"}
+```
+
+Escaping ANSI to HTML
+```bash
+$ curl http://localhost:3000/events?html=true
+
+data: {"filename":"/hi.txt","content":"Hello!\n"}
+
+data: {"filename":"/hi.txt","content":"My name is, Greg.\n"}
+
+data: {"filename":"/hi.txt","content":"<span style=\"color:#0AA\"> My favorite color is BLUE\n</span>"}
+```
+
+Only sending raw data
+```bash
+$ curl http://localhost:3000/events?raw=true
+
+/hi.txt> Hello!
+/hi.txt> My name is, Greg.
+```
+
+Using a pattern
+```bash
+$ curl http://localhost:3000/events?pattern=*.txt
+
+data: {"filename":"/hi.txt","content":"Hello!\n"}
+```
+
+
+### It does colors...
+```bash
+$ node demo/color-spitter.js >> /tmp/logs/colors.yay
+```
 
 ## Things you should know
 - can't really run it twice...
