@@ -84,7 +84,7 @@ That's fine and all but it's a little annoying to keep track of. *Especially if
 you even want to get into the business of dynamically adding jobs*.
 
 ```bash
-$ for i in `seq 4 100`
+$ for i in `seq 1 100`
 do
   sudo start jam_job name="app${i}.log" logdir="/tmp/logs/"
 done
