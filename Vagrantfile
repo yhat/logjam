@@ -11,7 +11,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Setup virtual machine box. This VM configuration code is always executed.
   config.vm.box = BOX_NAME
   # config.vm.box = "ubuntu/trusty64"
-  config.vm.box = "jess/ubuntu-yhat-essentials"
+  config.vm.box = "ubuntu/trusty64"
   config.vm.box_check_update = true
 
   config.vm.provision :shell, :inline => "/logjam/provision/system"

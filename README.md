@@ -11,6 +11,9 @@ and redirects them into an event-stream.
 __This means when you write files to a directory that's been logjammed, you're
 actually writing to a stream__.
 
+## What can I use this for?
+Well...
+
 ## Installation
 ### Install FUSE
 Linux:
@@ -71,21 +74,35 @@ Jamming your friends up isn't cool, but jamming up your logs is. `jam up`
 hijacks a directory's file operations and puts them all into an event stream.
 It's sort of like a log pirate.
 
-For example, let's say you have 3 apps running. Their logs will show up in 3
-different places. For example:
+For example, let's say you have 3 jobs running on a server. Their logs will
+show up in 3 different places. For example:
 
-    - `/var/log/app1.log`
-    - `/var/log/app2.log`
-    - `/var/log/app3.log`
+- `/tmp/log/app1.log` (`sudo start jam_job name="app1.log" logdir="/tmp/log/"`)
+- `/tmp/log/app2.log` (`sudo start jam_job name="app2.log" logdir="/tmp/log/"`)
+- `/tmp/log/app3.log` (`sudo start jam_job name="app3.log" logdir="/tmp/log/"`)
 
-![var logs](http://placehold.it/200x200)
+![](https://raw.githubusercontent.com/yhat/logjam/master/public/images/examples/0.png)
+
+One way to monitor all of the logs would be to use tail
+
+```bash
+$ tail -f /tmp/logs/app*.log
+```
 
 That's fine and all but it's a little annoying to keep track of. *Especially if 
 you even want to get into the business of dynamically adding jobs*.
 
-![logs of job logs](http://placehold.it/200x200)
+```bash
+$ for i in `seq 4 100`
+do
+  sudo start jam_job name="app${i}.log" logdir="/tmp/logs/"
+done
+```
 
-So instead you can use `jam up` to redirect all of those logs into a stream! 
+![](https://raw.githubusercontent.com/yhat/logjam/master/public/images/examples/1.png)
+
+Not quite as much fun. So instead you can use `jam up` to redirect all of those
+logs into a stream! 
 
 So when you're apps/jobs write to any file in `/tmp/logs`, __`logjam` is 
 actually turning this into a stream__. The file doesn't actually get written. 
@@ -94,17 +111,14 @@ It's a virtual file!
 You can take that stream anywhere. And it's easy to access via curl or any other
  HTTP client.
 
-![curl jam](http://placehold.it/200x200)
+![](https://raw.githubusercontent.com/yhat/logjam/master/public/images/examples/2.png)
 
-<img src="https://raw.githubusercontent.com/yhat/logjam/master/public/images/mac-basketball.png" height="200px">
-
-*PROTIP: Jamming your friends up isn't cool*
 
 ### `jam tail`
 Super simple, almost unneccessary. `jam tail` hooks up with a `jam up` stream 
 and then writes any data back to `stdout`.
 
-<img src="https://raw.githubusercontent.com/yhat/logjam/master/public/images/jam-tail-example.png" height="200px">
+![](https://raw.githubusercontent.com/yhat/logjam/master/public/images/examples/3.png)
 
 ### `/events`
 - __html__ (true/false): Flag for whether to send back HTML in stream.
@@ -172,3 +186,6 @@ $ node demo/color-spitter.js >> /tmp/logs/colors.yay
 ## Bugs
 - `echo "abcd" > /tmp/logdir/filename` doesn't work
 
+<img src="https://raw.githubusercontent.com/yhat/logjam/master/public/images/mac-basketball.png" height="200px">
+
+*PROTIP: Jamming your friends up isn't cool*

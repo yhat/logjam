@@ -24,6 +24,7 @@ apt-get install -y pkg-config
 apt-get install -y man
 apt-get install -y python-pip
 apt-get install -y python-dev
+apt-get install -y nodejs
 apt-get install -y jq
 apt-get install -y sshfs
 apt-get install -y libfuse-dev
