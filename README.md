@@ -112,13 +112,14 @@ You can take that stream anywhere. And it's easy to access via curl or any other
  HTTP client.
 
 ![](https://raw.githubusercontent.com/yhat/logjam/master/public/images/examples/2.png)
+![](https://raw.githubusercontent.com/yhat/logjam/master/public/images/examples/3.png)
 
 
 ### `jam tail`
 Super simple, almost unneccessary. `jam tail` hooks up with a `jam up` stream 
 and then writes any data back to `stdout`.
 
-![](https://raw.githubusercontent.com/yhat/logjam/master/public/images/examples/3.png)
+![](https://raw.githubusercontent.com/yhat/logjam/master/public/images/examples/4.png)
 
 ### `/events`
 - __html__ (true/false): Flag for whether to send back HTML in stream.
