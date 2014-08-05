@@ -18,7 +18,6 @@ Well...
 ### Install FUSE
 - Ubuntu: `sudo apt-get install libfuse-dev`
 - CentOS / RedHat: `yum install fuse-devel`
-- pkg-config tool (typically included out-of-the-box with the OS)
 - OSX [osxfuse](http://osxfuse.github.com/)
 
 ### Install logjam
