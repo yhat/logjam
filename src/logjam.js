@@ -1,3 +1,9 @@
+/*
+ * This is the module that does the actual jamming. It's largely adapted
+ * from the fuse4js examples https://github.com/bcle/fuse4js/tree/master/example
+ *
+ */
+
 var fs = require('fs')
   , _ = require('underscore')
   , f4js = require('fuse4js')
@@ -439,15 +445,4 @@ module.exports = function(srcRoot, options) {
     destroy: destroy
   };
   f4js.start(mountPoint, handlers, undefined);
-  /*
-  // TODO: this doesn't work
-  process.on('exit', function() {
-    console.log("Removing disk mount...");
-    $("diskutil unmount " + mountPoint);
-    process.exit();
-  });
-  process.on('SIGINT', function() { 
-    process.exit();
-  });
-  */
 }

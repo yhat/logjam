@@ -1,7 +1,3 @@
-/**
- * Module dependencies.
- */
-
 var express = require('express')
   , http = require('http')
   , fs = require('fs')
@@ -28,7 +24,6 @@ module.exports = function(logdir, port) {
   app.engine('html', exphbs({
     defaultLayout: 'main',
     extname: '.html'
-    //helpers: helpers
   }));
   app.enable('view cache');
   app.use(express.favicon());
@@ -77,7 +72,10 @@ module.exports = function(logdir, port) {
         }
         var body;
         if (req.query.raw=="true") {
-          body = data.filename + "> " + data.content;
+          if (req.query.filename=="true") {
+            body = data.filename;
+          }
+          body += data.content;
         } else {
           body = 'data: ' + JSON.stringify(data) + '\n\n';
         }
@@ -102,18 +100,17 @@ module.exports = function(logdir, port) {
   });
   var server = require('http').createServer(app);
   server.listen(app.get('port'), function(){
-    // some senseless art...
     var art = fs.readFileSync(path.join(__dirname, 'art.txt')).toString();
     console.log(art);
     console.log("Running on port " + app.get('port'));
   });
 
   /*
-   * Initializing logstream. This is going to hijack the logdir using FUSE
+   * Initializing logjam. This is going to hijack the logdir using FUSE
    * and then redirect all writes back to the event-stream in /events
    */
   var options = {
     rollingBytes: null
   };
-  require('./logstream')(logdir, options);
+  require('./logjam')(logdir, options);
 };

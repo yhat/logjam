@@ -1,13 +1,14 @@
 {
   "name": "logjam",
   "description": "Jam all of your logs into an event-stream",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": false,
   "repository": {
     "type": "git",
     "url": "https://github.com/yhat/logjam/"
   },
   "keywords": [
+    "logjam",
     "logs",
     "event stream",
     "events source",
@@ -22,7 +23,6 @@
     "ansi-to-html": "^0.2.0",
     "coffee-script": "~1.6.3",
     "docopt": "~0.4.0",
-    "ejs": "*",
     "express": "3.4.0",
     "express3-handlebars": "^0.5.0",
     "fuse4js": "git://github.com/bcle/fuse4js",
