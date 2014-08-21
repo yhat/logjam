@@ -71,10 +71,10 @@ module.exports = function(logdir, port) {
         if (req.query.html=="true") {
           data.content = ansi.toHtml(data.content);
         }
-        var body;
+        var body = '';
         if (req.query.raw=="true") {
           if (req.query.filename=="true") {
-            body = data.filename;
+            body += data.filename;
           }
           body += data.content;
         } else {
