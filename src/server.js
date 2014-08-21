@@ -29,6 +29,7 @@ module.exports = function(logdir, port) {
   app.use(express.favicon());
   app.use(express.logger('dev'));
   app.use(express.bodyParser());
+  app.use(require('cors')());
   app.use(express.methodOverride());
   app.use(app.router);
   // public AND node_modules (for CustomElements)
@@ -40,7 +41,7 @@ module.exports = function(logdir, port) {
     app.use(express.errorHandler());
   }
 
-  app.get('/', function(req, res) {
+  app.get('/demo', function(req, res) {
     res.render('index', { title: "Logs" });
   });
 
@@ -53,7 +54,7 @@ module.exports = function(logdir, port) {
    * nice because you can just curl localhost:3000/events and it has
    * the same affect as just doing tail -f *.log.
    */
-  app.get('/events', function(req, res) {
+  app.get('/', function(req, res) {
     // keep the connection open indefinitely
     req.socket.setTimeout(Infinity);
 

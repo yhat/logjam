@@ -47,9 +47,9 @@ Example:
 $ jam up --logdir /path/to/logs --port 3000
 # connect the logs
 $ jam tail --host localhost --port 3000
-$ curl localhost:3000/events
-$ curl localhost:3000/events?raw=true
-$ curl localhost:3000/events?html=true
+$ curl localhost:3000/
+$ curl localhost:3000?raw=true
+$ curl localhost:3000?html=true
 ```
 
 ### Open [http://localhost:3000/](http://localhost:3000/)
@@ -112,7 +112,7 @@ and then writes any data back to `stdout`.
 
 ![](https://raw.githubusercontent.com/yhat/logjam/master/public/images/examples/4.png)
 
-### `/events`
+### `/`
 - __html__ (true/false): Flag for whether to send back HTML in stream.
 - __raw__ (true/false): Flag for whether or not to use event-stream protocol.
 - __pattern__ (glob): Pattern for matching a filename.
@@ -130,7 +130,7 @@ give you some nice looking output.
 
 #### Basic usage with event stream format
 ```bash
-$ curl http://localhost:3000/events
+$ curl http://localhost:3000/
 
 data: {"filename":"/hi.txt","content":"Hello!\n"}
 
@@ -139,7 +139,7 @@ data: {"filename":"/hi.txt","content":"My name is, Greg.\n"}
 
 #### Escaping ANSI to HTML
 ```bash
-$ curl http://localhost:3000/events?html=true
+$ curl http://localhost:3000?html=true
 
 data: {"filename":"/hi.txt","content":"Hello!\n"}
 
@@ -150,7 +150,7 @@ data: {"filename":"/hi.txt","content":"<span style=\"color:#0AA\"> My favorite c
 
 #### Only sending raw data
 ```bash
-$ curl http://localhost:3000/events?raw=true
+$ curl http://localhost:3000?raw=true
 
 /hi.txt> Hello!
 /hi.txt> My name is, Greg.
@@ -158,7 +158,7 @@ $ curl http://localhost:3000/events?raw=true
 
 #### Using a pattern
 ```bash
-$ curl http://localhost:3000/events?pattern=*.txt
+$ curl http://localhost:3000?pattern=*.txt
 
 data: {"filename":"/hi.txt","content":"Hello!\n"}
 ```
